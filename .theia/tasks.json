@@ -10,7 +10,7 @@
       "request": "launch",
       "program": "${file}",
       "command": "gunicorn",
-      "args": [ "stock:app" ],
+      "args": [ "stock.web:app" ],
       "console": "integratedTerminal"
     }
   ]

@@ -1,2 +1,2 @@
-web: gunicorn stock:app
-cralwer: python -m stock.cralwer.cralwer
+web: gunicorn stock.web:app
+cralwer: python -m stock.crawler.crawler
