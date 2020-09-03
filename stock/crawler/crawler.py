@@ -3,14 +3,28 @@ import pymongo
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from apscheduler.schedulers.blocking import BlockingScheduler
+import logging
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s;%(levelname)s; %(message)s", "%Y-%m-%d %H:%M:%S")
+ch.setFormatter(formatter)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 client = None
 db = None
 
+sched = BlockingScheduler()
+
+@sched.scheduled_job('cron', hour=16, minute=0)
 def run():
     global client, db
 
-    print('start cralwer')
+    logger.info('start cralwer')
 
     if db is None:
         mongo_url = None
@@ -33,7 +47,7 @@ def run():
     for tr in bs.select('table.type_2 tr'):
         data = list(map(lambda td: td.text.strip(), tr.select('td')))
         if len(data) > 1:
-            print(data)
+            logger.info(data)
 
             db.notes.insert_one({
                 '_id': f'{today}_{data[1]}',
@@ -49,4 +63,4 @@ def run():
                 '저가': data[9],
             })
 
-run()
+sched.start()
