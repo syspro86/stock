@@ -1,10 +1,4 @@
-import os
-from flask import Flask
+from stock import crawler
+from stock import web
 
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello World!'
-
-    
+app = web.app
